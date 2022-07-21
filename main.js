@@ -39,7 +39,7 @@ var app = http.createServer(function (request, response) {
           throw error;
         }
         db.query( // 선택한 항목의 데이터를 출력한다
-          `SELECT * FROM topic WHERE id=?`,
+          `SELECT * FROM topic LEFT JOIN author ON topic.author_id = author.id WHERE topic.id=?`, // LEFT JOIN을 통한 조인
           [queryData.id],
           function (error2, topic) {
             if (error2) {
@@ -51,7 +51,9 @@ var app = http.createServer(function (request, response) {
             var html = template.HTML(
               title,
               list,
-              `<h2>${title}</h2>${description}`, // 입력, 삭제, 수정 폼
+              `<h2>${title}</h2>${description}
+               <p>by  ${topic[0].name} </p> 
+               <p> ${topic[0].created} </p>`,
               ` <a href="/create">create</a>
                 <a href="/update?id=${queryData.id}">update</a>
                 <form action="delete_process" method="post">
