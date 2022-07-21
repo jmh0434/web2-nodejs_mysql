@@ -68,27 +68,32 @@ var app = http.createServer(function (request, response) {
       });
     }
   } else if (pathname === "/create") { // 만들기 버튼을 눌렀을 때
-    db.query(`SELECT * FROM topic`, function (error, topics) { // 쿼리를 통해 읽어오고
-      var title = "Create";
-      var list = template.list(topics);
-      var html = template.HTML(
-        title,
-        list,
-        `
+    db.query(`SELECT * FROM topic`, function (error, topics) { // topic DB를 읽어오고
+      db.query(`SELECT * FROM author`, function(error2, authors) { // author DB도 읽어온다
+        var title = "Create";
+        var list = template.list(topics);
+        var html = template.HTML( // 글쓴이를 고를 수 있게 해줌
+          title,
+          list,
+          `
           <form action="/create_process" method="post">
             <p><input type="text" name="title" placeholder="title"></p>
             <p>
               <textarea name="description" placeholder="description"></textarea>
             </p>
+             <p>
+              ${template.authorSelect(authors)} 
+            </p>
             <p>
-              <input type="submit">
+              <input type = "submit">
             </p>
           </form>
           `,
-        `<a href="/create">create</a>`
-      );
-      response.writeHead(200);
-      response.end(html);
+          `<a href="/create">create</a>`
+        );
+        response.writeHead(200);
+        response.end(html);
+      });
     });
   } else if (pathname === "/create_process") { // 생성 후 처리
     var body = "";
@@ -101,7 +106,7 @@ var app = http.createServer(function (request, response) {
         `
             INSERT INTO topic (title, description, created, author_id) 
               VALUES(?, ?, NOW(), ?)`,
-        [post.title, post.description, 1],
+        [post.title, post.description, post.author],
         function (error, result) {
           if (error) {
             throw error;
