@@ -1,6 +1,7 @@
 var http = require("http");
 var url = require("url");
 var topic = require("./lib/topic");
+var author = require("./lib/author");
 
 var app = http.createServer(function (request, response) {
   var _url = request.url;
@@ -23,6 +24,8 @@ var app = http.createServer(function (request, response) {
       topic.update_process(request, response);
   } else if (pathname === "/delete_process") { // 삭제 처리
       topic.delete_process(request, response);
+  } else if (pathname ==="/author") { // 저자 목록 보이기
+      author.home(request, response);
   } else {
     response.writeHead(404);
     response.end("Not found");
