@@ -24,11 +24,19 @@ var app = http.createServer(function (request, response) {
       topic.update_process(request, response);
   } else if (pathname === "/delete_process") { // 삭제 처리
       topic.delete_process(request, response);
-  } else if (pathname ==="/author") { // 저자 목록 보이기
+  } else if (pathname === "/author") { // 저자 목록 보이기
       author.home(request, response);
+  } else if (pathname === "/author/create_process") { // 저자 생성 처리
+      author.create_process(request, response);
+  } else if (pathname === "/author/update") { // 저자 업데이트 UI
+      author.update(request, response);
+  } else if (pathname === "/author/update_process") { // 저자 업데이트 처리
+      author.update_process(request, response);
+  } else if (pathname === "/author/delete_process") {
+      author.delete_process(request, response);
   } else {
-    response.writeHead(404);
-    response.end("Not found");
+      response.writeHead(404);
+      response.end("Not found");
   }
 });
 app.listen(3000);
